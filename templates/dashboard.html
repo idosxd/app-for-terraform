@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AquaTrack - Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <script>
+        function showAddWaterAlert() {
+            alert("Well done, keep drinking and stay healthy!");
+        }
+
+        function showRemoveWaterAlert() {
+            alert("You have removed amout of water. It's okay, mistakes happen. You'll probably drink more during the day!");
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1 class="dashboard-heading">Welcome, {{ session['username'] }}!</h1>
+        <p class="water-consumption">Water Consumption: {{ convert_to_liters(water_consumption) }}</p>
+        {% if water_consumption < 3000 %}
+            <p class="water-consumption-message">You have not consumed the recommended amount of water for the day. Amount of water missing: {{ convert_to_liters(3000 - water_consumption) }}</p>
+        {% else %}
+            <p class="water-consumption-message success-message">Congratulations, you have reached the recommended amount of water consumption for the day:)</p>
+        {% endif %}
+        <form class="add-water-form" action="/add_water" method="post" onsubmit="showAddWaterAlert()">
+            <input type="number" name="amount" placeholder="Enter water amount (in ml)" min="0" oninput="validity.valid||(value='');" required>
+            <input type="submit" value="Add">
+        </form>
+        <form class="remove-water-form" action="/remove_water" method="post" onsubmit="showRemoveWaterAlert(document.getElementsByName('amount')[0].value)">
+            <input type="number" name="amount" placeholder="Enter water amount to remove (in ml)" min="0" oninput="validity.valid||(value='');" required>
+            <input type="submit" value="Remove">
+        </form>
+        <form class="reset-form" action="/reset_water" method="post" onsubmit="return confirm('Are you sure you want to reset your water consumption? This action cannot be undone.');">
+            <input type="submit" value="Reset Water Consumption">
+        </form>
+        <form class="disconnect-form" action="/disconnect" method="post">
+            <input type="submit" value="Disconnect">
+        </form>
+    </div>
+</body>
+</html>
